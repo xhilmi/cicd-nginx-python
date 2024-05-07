@@ -23,7 +23,7 @@ COPY ./start.sh /start.sh
 COPY . /home
 
 # install required python module
-RUN pip install -r /opt/app/requirements.txt
+RUN pip3 install -r /opt/app/requirements.txt
 
 # add execute permission
 RUN chmod +x /start.sh
