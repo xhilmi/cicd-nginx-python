@@ -22,16 +22,13 @@ jobs:
   push_to_registry:
     name: Build and push Docker image to Docker Hub
     # ...but only when a `release` is `published`
-    if: github.event_name == 'release' # && github.event.action == 'published'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
-        # if: ${{ github.ref == 'ref/head/master' }} # Info: https://docs.github.com/en/free-pro-team@latest/actions/reference/context-and-expression-syntax-for-github-actions#about-contexts-and-expressions
 
       - name: Build and push image to the Docker Hub
         uses: docker/build-push-action@v1 # Info: https://github.com/docker/build-push-action/tree/releases/v1#tags
-        # if: ${{ github.ref == 'ref/head/master' }}
         with:
           context: .
           file: ./Dockerfile
