@@ -1,31 +1,35 @@
-# Base image
+# base image
 FROM alpine:latest
 
-# Install system packages
-RUN apk add --update --no-cache python3 nginx curl wget nano vim git bash fish
-RUN ln -sf python3 /usr/bin/python
-RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+# argument
+ARG DEBIAN_FRONTEND=noninteractive
 
-# Set environment variables
-ENV nginx_vhost=/etc/nginx/conf.d/default.conf \
-    nginx_conf=/etc/nginx/nginx.conf
+# install nginx + python3 into image
+RUN apk add --update --no-cache python3 \
+    nginx curl wget nano vim git bash fish && \
+    ln -sf python3 /usr/bin/python && \
+    python3 -m ensurepip && \
+    pip3 install --no-cache --upgrade pip setuptools
 
-# Copy application files/folders into image
-COPY ./nginx/default.conf ${nginx_vhost}
+# create environment variable
+ENV nginx_vhost=/etc/nginx/conf.d/default.conf
+ENV nginx_conf=/etc/nginx/nginx.conf
+
+# copy application files/folder into image
+COPY ./nginx/default ${nginx_vhost}
 COPY ./nginx/nginx.conf ${nginx_conf}
 COPY ./app /opt/app
 COPY ./start.sh /start.sh
+COPY . /home
 
-# Install required Python modules
-RUN pip3 install --no-cache -r /opt/app/requirements.txt
+# install required python module
+RUN pip install -r /opt/app/requirements.txt
 
-# Add execute permissions to the start script
+# add execute permission
 RUN chmod +x /start.sh
 
-# Expose HTTP and HTTPS ports
+# expose ports 80 + 443
 EXPOSE 80 443
 
-# Start the application using the start script
-CMD ["/start.sh"]
-
+# start the application using start.sh
+CMD [ "./start.sh" ]
