@@ -5,16 +5,16 @@ FROM alpine:latest
 # bash and fish are generally not necessary; I'm removing them for simplicity unless you specifically need them.
 RUN apk add --update --no-cache nginx curl wget nano vim git python3 py3-pip
 
-# Copy application and configuration files
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+# Set environment variables for nginx configuration
+ENV nginx_vhost=/etc/nginx/conf.d/default.conf
+ENV nginx_conf=/etc/nginx/nginx.conf
+
+# Copy application files/folder into image
+COPY ./nginx/default ${nginx_vhost}
+COPY ./nginx/nginx.conf ${nginx_conf}
 COPY ./app /opt/app
 COPY ./start.sh /start.sh
 COPY . /home
-
-# Fix file paths (assuming these are correct paths)
-ENV nginx_vhost=/etc/nginx/conf.d/default.conf
-ENV nginx_conf=/etc/nginx/nginx.conf
 
 # Install Python packages
 # We use a single RUN command to avoid issues with the virtual environment not being activated in separate RUN commands
