@@ -1,6 +1,13 @@
 # base image
 FROM alpine:latest
 
+# copy application files/folder into image
+COPY ./nginx/default ${nginx_vhost}
+COPY ./nginx/nginx.conf ${nginx_conf}
+COPY ./app /opt/app
+COPY ./start.sh /start.sh
+COPY . /home
+
 # argument
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -15,12 +22,12 @@ RUN apk add --update --no-cache python3 \
 ENV nginx_vhost=/etc/nginx/conf.d/default.conf
 ENV nginx_conf=/etc/nginx/nginx.conf
 
-# copy application files/folder into image
-COPY ./nginx/default ${nginx_vhost}
-COPY ./nginx/nginx.conf ${nginx_conf}
-COPY ./app /opt/app
-COPY ./start.sh /start.sh
-COPY . /home
+# # copy application files/folder into image
+# COPY ./nginx/default ${nginx_vhost}
+# COPY ./nginx/nginx.conf ${nginx_conf}
+# COPY ./app /opt/app
+# COPY ./start.sh /start.sh
+# COPY . /home
 
 # install required python module
 RUN pip3 install -r /opt/app/requirements.txt
