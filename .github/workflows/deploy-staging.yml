@@ -3,9 +3,9 @@ name: Deploy to Staging
 on:
   push:
     branches:
-      - staging  # This triggers the workflow on pushes to the master branch
+      - staging  # This triggers the workflow on pushes to the staging branch
     tags:
-      - '*'  # This triggers the workflow on any tag push
+      - 'staging-*'  # This triggers the workflow on any tag push
       
 jobs:  
   build-and-push:
