@@ -1,0 +1,42 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - staging  # This triggers the workflow on pushes to the master branch
+    tags:
+      - '*'  # This triggers the workflow on any tag push
+      
+jobs:  
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+  
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          
+      - name: Install dependencies
+        run: |
+          python3 -m ensurepip
+          python3 -m pip install --no-cache --upgrade pip setuptools
+          pip install -r requirements.txt     
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./Dockerfile 
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-python:${{ github.ref_name }}
