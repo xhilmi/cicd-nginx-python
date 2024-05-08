@@ -35,9 +35,8 @@ RUN python3 -m venv /opt/venv
 # Activate virtual environment and install dependencies
 # This ensures all Python packages are installed into the virtual environment
 RUN . /opt/venv/bin/activate \
-    && pip install --upgrade pip \
-    && pip install -r /opt/app/requirements.txt \
-    && pip install --no-cache --upgrade pip setuptools -r /opt/app/requirements.txt \
+    && pip install --upgrade pip setuptools \
+    && pip install -r /opt/app/requirements.txt
 
 # Add execute permission to the start script
 RUN chmod +x /start.sh
