@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - staging  # This triggers the workflow on pushes to the staging branch
+    tags:
+      - 'staging-*'  # This triggers the workflow on staging tag push
       
 jobs:  
   build-and-push:
