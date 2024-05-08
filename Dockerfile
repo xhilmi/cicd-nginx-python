@@ -16,7 +16,7 @@ RUN apk add --update --no-cache python3 \
     nginx curl wget nano vim git bash fish && \
     ln -sf python3 /usr/bin/python && \
     python3 -m ensurepip && \
-    pip3 install --no-cache --upgrade pip setuptools
+    pip install --no-cache --upgrade pip setuptools
 
 # create environment variable
 ENV nginx_vhost=/etc/nginx/conf.d/default.conf
@@ -30,7 +30,7 @@ ENV nginx_conf=/etc/nginx/nginx.conf
 # COPY . /home
 
 # install required python module
-RUN pip3 install -r /opt/app/requirements.txt
+RUN pip install -r /opt/app/requirements.txt
 
 # add execute permission
 RUN chmod +x /start.sh
