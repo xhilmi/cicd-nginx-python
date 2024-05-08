@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - develop  # This triggers the workflow on pushes to the develop branch
-    tags:
-      - 'develop-*'  # This triggers the workflow on any tag push
       
 jobs:  
   build-and-push:
