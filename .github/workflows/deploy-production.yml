@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build + Push + Deploy Docker Image to Production
 
 on:
   push:
@@ -10,7 +10,9 @@ on:
 jobs:  
   build-and-push:
     runs-on: ubuntu-latest
+    
     steps:
+    
       - name: Checkout Repository
         uses: actions/checkout@v3
   
