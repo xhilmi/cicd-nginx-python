@@ -19,12 +19,24 @@ COPY ./app /opt/app
 COPY ./start.sh /start.sh
 COPY . /home
 
-# Install Python 3 and required Python packages
-RUN apk add --update --no-cache python3 \
-    && ln -sf python3 /usr/bin/python \
-    && python3 -m ensurepip \
-    && pip3 install --no-cache --upgrade pip setuptools \
-    && pip3 install -r /opt/app/requirements.txt
+# # Install Python 3 and required Python packages
+# RUN apk add --update --no-cache python3 \
+#     && ln -sf python3 /usr/bin/python \
+#     && python3 -m ensurepip \
+#     && pip3 install --no-cache --upgrade pip setuptools \
+#     && pip3 install -r /opt/app/requirements.txt
+
+# Install Python 3 using apk
+RUN apk add --update --no-cache python3 py3-pip
+
+# Create a virtual environment for Python packages
+RUN python3 -m venv /opt/venv
+
+# Activate virtual environment and install dependencies
+# This ensures all Python packages are installed into the virtual environment
+RUN . /opt/venv/bin/activate && \
+    pip install --upgrade pip && \
+    pip install -r /opt/app/requirements.txt
 
 # Add execute permission to the start script
 RUN chmod +x /start.sh
