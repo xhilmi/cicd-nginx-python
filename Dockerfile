@@ -18,7 +18,8 @@ COPY . /home
 
 # Install Python packages
 # We use a single RUN command to avoid issues with the virtual environment not being activated in separate RUN commands
-RUN python3 -m venv /opt/venv \
+RUN apk add py3-flask py3-gunicorn \
+    && python3 -m venv /opt/venv \
     && source /opt/venv/bin/activate \
     && pip install --upgrade pip setuptools \
     && pip install -r /opt/app/requirements.txt
