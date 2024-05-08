@@ -1,40 +1,25 @@
 # Use the latest Alpine image
 FROM alpine:latest
 
-# Set frontend for non-interactive installation
-ARG DEBIAN_FRONTEND=noninteractive
+# Install required packages
+# bash and fish are generally not necessary; I'm removing them for simplicity unless you specifically need them.
+RUN apk add --update --no-cache nginx curl wget nano vim git python3 py3-pip
 
-# Install nginx and some useful utilities like curl, wget, nano, vim, git, bash, and fish
-RUN apk add --update --no-cache \
-    nginx curl wget nano vim git bash fish
-
-# Set environment variables for nginx configuration
-ENV nginx_vhost=/etc/nginx/conf.d/default.conf
-ENV nginx_conf=/etc/nginx/nginx.conf
-
-# Copy application files/folder into image
-COPY ./nginx/default ${nginx_vhost}
-COPY ./nginx/nginx.conf ${nginx_conf}
+# Copy application and configuration files
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./app /opt/app
 COPY ./start.sh /start.sh
 COPY . /home
 
-# # Install Python 3 and required Python packages
-# RUN apk add --update --no-cache python3 \
-#     && ln -sf python3 /usr/bin/python \
-#     && python3 -m ensurepip \
-#     && pip3 install --no-cache --upgrade pip setuptools \
-#     && pip3 install -r /opt/app/requirements.txt
+# Fix file paths (assuming these are correct paths)
+ENV nginx_vhost=/etc/nginx/conf.d/default.conf
+ENV nginx_conf=/etc/nginx/nginx.conf
 
-# Install Python 3 using apk
-RUN apk add --update --no-cache python3 py3-pip
-
-# Create a virtual environment for Python packages
-RUN python3 -m venv /opt/venv
-
-# Activate virtual environment and install dependencies
-# This ensures all Python packages are installed into the virtual environment
-RUN . /opt/venv/bin/activate \
+# Install Python packages
+# We use a single RUN command to avoid issues with the virtual environment not being activated in separate RUN commands
+RUN python3 -m venv /opt/venv \
+    && source /opt/venv/bin/activate \
     && pip install --upgrade pip setuptools \
     && pip install -r /opt/app/requirements.txt
 
