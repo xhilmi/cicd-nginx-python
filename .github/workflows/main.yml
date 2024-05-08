@@ -3,7 +3,9 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - master  # Ensure this matches your active branch name
+      - master  # This triggers the workflow on pushes to the master branch
+    tags:
+      - '*'  # This triggers the workflow on any tag push
       
 jobs:  
   build-and-push:
@@ -35,5 +37,4 @@ jobs:
           context: .
           file: ./Dockerfile 
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-python:latest
-
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-python:${{ github.ref_name }}
