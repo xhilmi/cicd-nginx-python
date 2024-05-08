@@ -1,36 +1,36 @@
-# base image
+# Use the latest Alpine image
 FROM alpine:latest
 
-# argument
+# Set frontend for non-interactive installation
 ARG DEBIAN_FRONTEND=noninteractive
 
-# install nginx + python3 into image
+# Install nginx and some useful utilities like curl, wget, nano, vim, git, bash, and fish
 RUN apk add --update --no-cache \
     nginx curl wget nano vim git bash fish
 
-# create environment variable
+# Set environment variables for nginx configuration
 ENV nginx_vhost=/etc/nginx/conf.d/default.conf
 ENV nginx_conf=/etc/nginx/nginx.conf
 
-# copy application files/folder into image
+# Copy application files/folder into image
 COPY ./nginx/default ${nginx_vhost}
 COPY ./nginx/nginx.conf ${nginx_conf}
 COPY ./app /opt/app
 COPY ./start.sh /start.sh
 COPY . /home
 
-# install required python module
+# Install Python 3 and required Python packages
 RUN apk add --update --no-cache python3 \
     && ln -sf python3 /usr/bin/python \
     && python3 -m ensurepip \
-    && pip install --no-cache --upgrade pip setuptools \
-    && pip install -r /opt/app/requirements.txt
+    && pip3 install --no-cache --upgrade pip setuptools \
+    && pip3 install -r /opt/app/requirements.txt
 
-# add execute permission
+# Add execute permission to the start script
 RUN chmod +x /start.sh
 
-# expose ports 80 + 443
+# Expose ports 80 and 443
 EXPOSE 80 443
 
-# start the application using start.sh
-CMD [ "./start.sh" ]
+# Command to start the application using start.sh
+CMD ["/start.sh"]
